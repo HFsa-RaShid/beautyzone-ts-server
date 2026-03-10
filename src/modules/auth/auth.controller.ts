@@ -28,15 +28,32 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+// export const currentUser = async (req: Request, res: Response) => {
+//   try {
+//     const token = req.cookies.accessToken;
+//     if (!token) return sendError(res, "Unauthorized", 401);
+//     const decoded: any = jwt.verify(token, config.jwt_access_secret as string);
+//     const user = await User.findById(decoded.id).select("-password -refreshToken");
+//     sendSuccess(res, { user });
+//   } catch (err) {
+//     sendError(res, "Forbidden", 403);
+//   }
+// };
+
 export const currentUser = async (req: Request, res: Response) => {
   try {
-    const token = req.cookies.accessToken;
-    if (!token) return sendError(res, "Unauthorized", 401);
-    const decoded: any = jwt.verify(token, config.jwt_access_secret as string);
-    const user = await User.findById(decoded.id).select("-password -refreshToken");
+   
+    const userId = (req as any).user?.id; 
+    if (!userId) {
+      return sendError(res, "Unauthorized", 401);
+    }
+    const user = await User.findById(userId).select("-password -refreshToken");
+    if (!user) {
+      return sendError(res, "User not found", 404);
+    }
     sendSuccess(res, { user });
   } catch (err) {
-    sendError(res, "Forbidden", 403);
+    sendError(res, "Something went wrong", 500);
   }
 };
 

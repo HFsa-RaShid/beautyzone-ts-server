@@ -21,7 +21,7 @@ export const registerUserDB = async (data: any) => {
 
 export const loginUserDB = async (email: string, password: string) => {
   const user = await User.findOne({ email });
-  console.log("Found User:", user);
+  // console.log("Found User:", user);
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw new Error("Invalid credentials");
   }
