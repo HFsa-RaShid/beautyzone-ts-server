@@ -7,6 +7,7 @@ router.post("/register", Controller.register);
 router.post("/login", Controller.login);
 router.get("/current-user",authMiddleware, Controller.currentUser);
 router.put("/update-profile", authMiddleware, Controller.updateProfile);
+router.put('/change-password', authMiddleware, Controller.changePassword);
 router.post("/logout", Controller.logout);
 
 export const AuthRoutes = router;

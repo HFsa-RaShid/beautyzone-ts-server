@@ -34,3 +34,22 @@ export const loginUserDB = async (email: string, password: string) => {
   
   return { user, accessToken, refreshToken };
 };
+
+
+export const changePasswordDB = async (userId: string, currentPassword: string, newPassword: string) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("User not found");
+
+  // Verify old password
+  const isMatch = await bcrypt.compare(currentPassword, user.password);
+  if (!isMatch) throw new Error("Incorrect current password");
+
+  // Hash and update to new password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+  
+  user.password = hashedPassword;
+  await user.save();
+  
+  return { message: "Password updated successfully" };
+};

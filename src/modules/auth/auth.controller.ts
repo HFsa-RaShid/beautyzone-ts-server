@@ -20,7 +20,7 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     const data = await AuthService.loginUserDB(email, password);
-    res.cookie("accessToken", data.accessToken, { httpOnly: true, secure: false });
+    res.cookie("accessToken", data.accessToken, { httpOnly: true, secure: false ,sameSite: 'lax'});
     res.cookie("refreshToken", data.refreshToken, { httpOnly: true, secure: false });
     sendSuccess(res, { user: data.user }, "Logged in successfully");
   } catch (err: any) {
@@ -61,6 +61,25 @@ export const updateProfile = async (req: Request, res: Response) => {
     sendSuccess(res, { user: updatedUser }, "Profile updated!");
   } catch (err: any) {
     sendError(res, err.message, 500);
+  }
+};
+
+
+export const changePassword = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user?.id;
+    const { currentPassword, newPassword } = req.body;
+
+    console.log("Received data:", { userId, currentPassword, newPassword });
+
+    if (!currentPassword || !newPassword) {
+      return sendError(res, "Missing required fields", 400); 
+    }
+
+    await AuthService.changePasswordDB(userId, currentPassword, newPassword);
+    sendSuccess(res, null, "Password changed successfully");
+  } catch (err: any) {
+    sendError(res, err.message, 400);
   }
 };
 
