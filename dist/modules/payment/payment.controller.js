@@ -86,16 +86,18 @@ const paymentSuccess = async (req, res) => {
     { paidStatus: true },
   );
   if (result) {
-    res.redirect(`http://localhost:3000/payment/success/${tranId}`);
+    res.redirect(
+      `https://beautyzone-ts-client-ve1e.vercel.app/payment/success/${tranId}`,
+    );
   } else {
-    res.redirect(`http://localhost:3000/payment/fail`);
+    res.redirect(`https://beautyzone-ts-client-ve1e.vercel.app/payment/fail`);
   }
 };
 exports.paymentSuccess = paymentSuccess;
 const paymentFail = async (req, res) => {
   const { tranId } = req.params;
   await payment_model_js_1.Payment.findOneAndDelete({ transactionId: tranId });
-  res.redirect(`http://localhost:3000/payment/fail`);
+  res.redirect(`https://beautyzone-ts-client-ve1e.vercel.app/payment/fail`);
 };
 exports.paymentFail = paymentFail;
 const getOrders = async (req, res) => {
