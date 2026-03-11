@@ -28,17 +28,6 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-// export const currentUser = async (req: Request, res: Response) => {
-//   try {
-//     const token = req.cookies.accessToken;
-//     if (!token) return sendError(res, "Unauthorized", 401);
-//     const decoded: any = jwt.verify(token, config.jwt_access_secret as string);
-//     const user = await User.findById(decoded.id).select("-password -refreshToken");
-//     sendSuccess(res, { user });
-//   } catch (err) {
-//     sendError(res, "Forbidden", 403);
-//   }
-// };
 
 export const currentUser = async (req: Request, res: Response) => {
   try {
@@ -54,6 +43,24 @@ export const currentUser = async (req: Request, res: Response) => {
     sendSuccess(res, { user });
   } catch (err) {
     sendError(res, "Something went wrong", 500);
+  }
+};
+
+
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user?.id;
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: req.body }, 
+      { returnDocument: 'after', runValidators: true } 
+    );
+
+    if (!updatedUser) return sendError(res, "User not found", 404);
+    sendSuccess(res, { user: updatedUser }, "Profile updated!");
+  } catch (err: any) {
+    sendError(res, err.message, 500);
   }
 };
 
